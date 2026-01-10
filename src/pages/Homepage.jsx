@@ -13,7 +13,7 @@ function Homepage() {
   const cleanText = (text) => {
       return text
         .replace(/[“”‘’'"]/g, "")     // quotes
-        .replace(/[.,;:!?]/g, "")    // punctuation
+        .replace(/[.,;:!?]/g, "")    // punctuation 
         .replace(/\s+/g, " ")        // extra spaces
         .trim();
     };
