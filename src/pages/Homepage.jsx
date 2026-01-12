@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 import Phrase from '../components/Phrase.jsx';
 import Navbar from '../components/Navbar.jsx';
+import Keyboard from '../components/Keyboard.jsx';
 
 function Homepage() {
   const [userInput, setUserInput] = useState('');
@@ -38,12 +39,28 @@ function Homepage() {
     fetchSentence();
   }, []);
 
+useEffect(() => {
+    const handleKeyDown = (event) => {
+      let key = event.key;
+      if (loading) return;
+      if(key === 'Backspace'){
+        setUserInput(prev => prev.slice(0, -1))
+      }else if(key.length === 1){
+        setUserInput(prev => prev+key);
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [loading])
+
   return (
     <div>
       <Navbar />
       <div className='flex items-center justify-center'>
-        <Phrase sentence={sentence} loading={loading} />
+        <Phrase sentence={sentence} loading={loading} userInput={userInput} />
       </div>
+        <Keyboard />
     </div>
   )
 }
