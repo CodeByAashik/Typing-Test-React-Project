@@ -6,6 +6,7 @@ import Keyboard from '../components/Keyboard.jsx';
 
 function Homepage() {
   const [userInput, setUserInput] = useState('');
+  const [correctCharacter, setCorrectCharacter] = useState(0);
 
   const [sentence, setSentence] = useState('');
   const [loading, setLoading] = useState(true);
@@ -58,7 +59,7 @@ useEffect(() => {
     <div>
       <Navbar />
       <div className='flex items-center justify-center'>
-        <Phrase sentence={sentence} loading={loading} userInput={userInput} />
+        <Phrase sentence={sentence} loading={loading} userInput={userInput} setCorrectCharacter={setCorrectCharacter}/>
       </div>
         <Keyboard />
     </div>
