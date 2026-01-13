@@ -1,4 +1,4 @@
-function Phrase({sentence, loading, userInput, setCorrectCharacter}) {
+function Phrase({sentence, loading, userInput, setCorrectCharacter, correctCharacter}) {
 
   const renderText = () => {
     if (loading) {
@@ -19,6 +19,7 @@ function Phrase({sentence, loading, userInput, setCorrectCharacter}) {
             if (char === userInput[index]) {
               className = 'text-green-400'; // correct
               setCorrectCharacter(prev => prev+1)
+              console.log('correct', setCorrectCharacter)
             } else {
               className = 'text-red-400'; // incorrect
             }

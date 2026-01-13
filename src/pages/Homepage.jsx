@@ -59,7 +59,7 @@ useEffect(() => {
     <div>
       <Navbar />
       <div className='flex items-center justify-center'>
-        <Phrase sentence={sentence} loading={loading} userInput={userInput} setCorrectCharacter={setCorrectCharacter}/>
+        <Phrase sentence={sentence} loading={loading} userInput={userInput} setCorrectCharacter={setCorrectCharacter} correctCharacter={correctCharacter}/>
       </div>
         <Keyboard />
     </div>
