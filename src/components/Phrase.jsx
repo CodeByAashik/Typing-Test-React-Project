@@ -7,7 +7,7 @@ function Phrase({sentence, loading, userInput, setCorrectCharacter, correctChara
           Loading text...
         </p>
       );
-    }
+    }  
 
     return (
       <p className="text-2xl leading-relaxed font-medium">
