@@ -1,4 +1,17 @@
+import React from 'react';
+
 function Phrase({sentence, loading, userInput, setCorrectCharacter, correctCharacter}) {
+  
+  // Update correct character count whenever userInput changes
+  React.useEffect(() => {
+    let count = 0;
+    for (let i = 0; i < userInput.length; i++) {
+      if (sentence[i] === userInput[i]) {
+        count++;
+      }
+    }
+    setCorrectCharacter(count);
+  }, [userInput, sentence, setCorrectCharacter]);
 
   const renderText = () => {
     if (loading) {
@@ -12,14 +25,11 @@ function Phrase({sentence, loading, userInput, setCorrectCharacter, correctChara
     return (
       <p className="text-2xl leading-relaxed font-medium">
         {sentence.split('').map((char, index) => {
-          console.log(char)
           let className = 'text-neutral-100'; // default color
 
           if (index < userInput.length) {
             if (char === userInput[index]) {
               className = 'text-green-400'; // correct
-              setCorrectCharacter(prev => prev+1)
-              console.log('correct', setCorrectCharacter)
             } else {
               className = 'text-red-400'; // incorrect
             }
@@ -28,7 +38,7 @@ function Phrase({sentence, loading, userInput, setCorrectCharacter, correctChara
           }
 
           return (
-            <span key={index} className={className}>
+            <span key={`char-${index}`} className={className}>
               {char}
             </span>
           );
