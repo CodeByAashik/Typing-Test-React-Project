@@ -10,6 +10,11 @@ function Homepage() {
 
   const [sentence, setSentence] = useState('');
   const [loading, setLoading] = useState(true);
+  
+  const [startTime, setStartTime] = useState(null);
+  const [elapsedTime, setElapsedTime] = useState(0);
+  const [wpm, setWpm] = useState(0);
+  const [accuracy, setAccuracy] = useState(100);
 
   // Clean the raw text by removing unwanted characters
   const cleanText = (text) => {
@@ -40,6 +45,37 @@ function Homepage() {
     fetchSentence();
   }, []);
 
+  // Track elapsed time when user starts typing
+  useEffect(() => {
+    if (userInput.length > 0 && startTime === null) {
+      setStartTime(Date.now());
+    }
+  }, [userInput, startTime]);
+
+  // Update elapsed time and calculate speed metrics
+  useEffect(() => {
+    if (startTime === null) return;
+
+    const interval = setInterval(() => {
+      const elapsed = (Date.now() - startTime) / 1000; // in seconds
+      setElapsedTime(elapsed);
+
+      // Calculate WPM (assuming average word length of 5 characters)
+      const minutes = elapsed / 60;
+      const words = userInput.length / 5;
+      const currentWpm = minutes > 0 ? Math.round(words / minutes) : 0;
+      setWpm(currentWpm);
+
+      // Calculate accuracy
+      if (userInput.length > 0) {
+        const currentAccuracy = Math.round((correctCharacter / userInput.length) * 100);
+        setAccuracy(currentAccuracy);
+      }
+    }, 100);
+
+    return () => clearInterval(interval);
+  }, [startTime, userInput.length, correctCharacter]);
+
 useEffect(() => {
     const handleKeyDown = (event) => {
       let key = event.key;
@@ -57,7 +93,7 @@ useEffect(() => {
 
   return (
     <div>
-      <Navbar />
+      <Navbar wpm={wpm} accuracy={accuracy} elapsedTime={elapsedTime} />
       <div className='flex items-center justify-center'>
         <Phrase sentence={sentence} loading={loading} userInput={userInput} setCorrectCharacter={setCorrectCharacter} correctCharacter={correctCharacter}/>
       </div>
