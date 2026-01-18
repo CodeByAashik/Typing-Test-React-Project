@@ -1,7 +1,6 @@
 import React from 'react';
 
 function Phrase({sentence, loading, userInput, setCorrectCharacter, correctCharacter}) {
-  
   // Update correct character count whenever userInput changes
   React.useEffect(() => {
     let count = 0;

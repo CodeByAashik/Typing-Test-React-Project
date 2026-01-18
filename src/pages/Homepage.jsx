@@ -20,13 +20,13 @@ function Homepage() {
   const cleanText = (text) => {
       return text
         .replace(/[“”‘’'"]/g, "")     // quotes
-        .replace(/[.,;:!?]/g, "")    // punctuation 
-        .replace(/\s+/g, " ")        // extra spaces
+        .replace(/[.,;:!?]/g, "")     // punctuation
+        .replace(/\s+/g, " ")         // extra spaces
         .trim();
     };
 
 
-    // fetch the raw sentence from the API
+  // fetch the raw sentence from the API
   const fetchSentence = async () => {
     try {
       setLoading(true);
@@ -38,7 +38,6 @@ function Homepage() {
     } finally {
       setLoading(false);
     }
-
   }
 
   useEffect(() => {
