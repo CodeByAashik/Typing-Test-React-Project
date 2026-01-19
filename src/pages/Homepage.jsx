@@ -109,23 +109,25 @@ useEffect(() => {
 
   // Check if test is complete
   useEffect(() => {
-    if (sentence && userInput.length === sentence.length && userInput.length > 0 && startTime !== null) {
+    if (sentence && userInput.length === sentence.length && userInput.length > 0 && startTime !== null && !testComplete) {
       setTestComplete(true);
+    }
+  }, [userInput, sentence, startTime, testComplete]);
 
-      // Calculate averages
-      if (metricsLog.length > 0) {
-        const avgWpm = Math.round(metricsLog.reduce((sum, log) => sum + log.wpm, 0) / metricsLog.length);
-        const avgAccuracy = Math.round(metricsLog.reduce((sum, log) => sum + log.accuracy, 0) / metricsLog.length);
-        setAverageWpm(avgWpm);
-        setAverageAccuracy(avgAccuracy);
-      }
+  // Calculate and display averages when test completes
+  useEffect(() => {
+    if (testComplete && metricsLog.length > 0) {
+      const avgWpm = Math.round(metricsLog.reduce((sum, log) => sum + log.wpm, 0) / metricsLog.length);
+      const avgAccuracy = Math.round(metricsLog.reduce((sum, log) => sum + log.accuracy, 0) / metricsLog.length);
+      setAverageWpm(avgWpm);
+      setAverageAccuracy(avgAccuracy);
 
       console.log('=== TEST COMPLETE ===');
       console.log('Metrics Log:', metricsLog);
-      console.log(`Average WPM: ${averageWpm}`);
-      console.log(`Average Accuracy: ${averageAccuracy}%`);
+      console.log(`Average WPM: ${avgWpm}`);
+      console.log(`Average Accuracy: ${avgAccuracy}%`);
     }
-  }, [userInput, sentence, metricsLog, startTime]);
+  }, [testComplete, metricsLog]);
 
   return (
     <div>
