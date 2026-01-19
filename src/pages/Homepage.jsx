@@ -15,6 +15,10 @@ function Homepage() {
   const [elapsedTime, setElapsedTime] = useState(0);
   const [wpm, setWpm] = useState(0);
   const [accuracy, setAccuracy] = useState(100);
+  const [testComplete, setTestComplete] = useState(false);
+  const [averageWpm, setAverageWpm] = useState(0);
+  const [averageAccuracy, setAverageAccuracy] = useState(0);
+  const [metricsLog, setMetricsLog] = useState([]);
 
   // Clean the raw text by removing unwanted characters
   const cleanText = (text) => {
@@ -53,8 +57,9 @@ function Homepage() {
 
   // Update elapsed time and calculate speed metrics
   useEffect(() => {
-    if (startTime === null) return;
+    if (startTime === null || testComplete) return;
 
+    let secondCounter = 0;
     const interval = setInterval(() => {
       const elapsed = (Date.now() - startTime) / 1000; // in seconds
       setElapsedTime(elapsed);
@@ -70,10 +75,22 @@ function Homepage() {
         const currentAccuracy = Math.round((correctCharacter / userInput.length) * 100);
         setAccuracy(currentAccuracy);
       }
+
+      // Log metrics every second
+      if (Math.floor(elapsed) > secondCounter) {
+        secondCounter = Math.floor(elapsed);
+        const logEntry = {
+          second: secondCounter,
+          wpm: currentWpm,
+          accuracy: userInput.length > 0 ? Math.round((correctCharacter / userInput.length) * 100) : 0
+        };
+        console.log(`[Second ${logEntry.second}] WPM: ${logEntry.wpm}, Accuracy: ${logEntry.accuracy}%`);
+        setMetricsLog(prev => [...prev, logEntry]);
+      }
     }, 100);
 
     return () => clearInterval(interval);
-  }, [startTime, userInput.length, correctCharacter]);
+  }, [startTime, userInput.length, correctCharacter, testComplete]);
 
 useEffect(() => {
     const handleKeyDown = (event) => {
@@ -90,14 +107,70 @@ useEffect(() => {
     return () => window.removeEventListener("keydown", handleKeyDown)
   }, [loading])
 
+  // Check if test is complete
+  useEffect(() => {
+    if (sentence && userInput.length === sentence.length && userInput.length > 0 && startTime !== null) {
+      setTestComplete(true);
+
+      // Calculate averages
+      if (metricsLog.length > 0) {
+        const avgWpm = Math.round(metricsLog.reduce((sum, log) => sum + log.wpm, 0) / metricsLog.length);
+        const avgAccuracy = Math.round(metricsLog.reduce((sum, log) => sum + log.accuracy, 0) / metricsLog.length);
+        setAverageWpm(avgWpm);
+        setAverageAccuracy(avgAccuracy);
+      }
+
+      console.log('=== TEST COMPLETE ===');
+      console.log('Metrics Log:', metricsLog);
+      console.log(`Average WPM: ${averageWpm}`);
+      console.log(`Average Accuracy: ${averageAccuracy}%`);
+    }
+  }, [userInput, sentence, metricsLog, startTime]);
+
   return (
     <div>
       <Navbar wpm={wpm} accuracy={accuracy} elapsedTime={elapsedTime} />
       <div className='flex items-center justify-center'>
         <Phrase sentence={sentence} loading={loading} userInput={userInput} setCorrectCharacter={setCorrectCharacter} correctCharacter={correctCharacter}/>
       </div>
-        <Keyboard />
+      {testComplete && (
+        <div className='flex justify-center mt-8'>
+          <div className='bg-gradient-to-br from-green-900 to-blue-900 rounded-lg p-8 max-w-2xl text-center border-2 border-green-400'>
+            <h2 className='text-3xl font-bold text-green-400 mb-6'>Test Complete!</h2>
+            <div className='grid grid-cols-2 gap-6'>
+              <div>
+                <p className='text-gray-300 text-sm mb-2'>Average WPM</p>
+                <p className='text-4xl font-bold text-blue-400'>{averageWpm}</p>
+              </div>
+              <div>
+                <p className='text-gray-300 text-sm mb-2'>Average Accuracy</p>
+                <p className='text-4xl font-bold text-green-400'>{averageAccuracy}%</p>
+              </div>
+            </div>
+            <button 
+              onClick={() => {
+                setUserInput('');
+                setCorrectCharacter(0);
+                setStartTime(null);
+                setElapsedTime(0);
+                setWpm(0);
+                setAccuracy(100);
+                setTestComplete(false);
+                setMetricsLog([]);
+                setAverageWpm(0);
+                setAverageAccuracy(0);
+                fetchSentence();
+              }}
+              className='mt-8 px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-lg transition'
+            >
+              Try Again
+            </button>
+          </div>
+        </div>
+      )}
+      <Keyboard />
     </div>
+  )
   )
 }
 
