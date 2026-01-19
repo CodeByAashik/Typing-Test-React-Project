@@ -64,33 +64,40 @@ function Homepage() {
       const elapsed = (Date.now() - startTime) / 1000; // in seconds
       setElapsedTime(elapsed);
 
-      // Calculate WPM (assuming average word length of 5 characters)
-      const minutes = elapsed / 60;
-      const words = userInput.length / 5;
-      const currentWpm = minutes > 0 ? Math.round(words / minutes) : 0;
-      setWpm(currentWpm);
+      setUserInput(currentInput => {
+        const minutes = elapsed / 60;
+        const words = currentInput.length / 5;
+        const currentWpm = minutes > 0 ? Math.round(words / minutes) : 0;
+        setWpm(currentWpm);
 
-      // Calculate accuracy
-      if (userInput.length > 0) {
-        const currentAccuracy = Math.round((correctCharacter / userInput.length) * 100);
-        setAccuracy(currentAccuracy);
-      }
+        setCorrectCharacter(currentCorrect => {
+          // Calculate accuracy
+          if (currentInput.length > 0) {
+            const currentAccuracy = Math.round((currentCorrect / currentInput.length) * 100);
+            setAccuracy(currentAccuracy);
+          }
 
-      // Log metrics every second
-      if (Math.floor(elapsed) > secondCounter) {
-        secondCounter = Math.floor(elapsed);
-        const logEntry = {
-          second: secondCounter,
-          wpm: currentWpm,
-          accuracy: userInput.length > 0 ? Math.round((correctCharacter / userInput.length) * 100) : 0
-        };
-        console.log(`[Second ${logEntry.second}] WPM: ${logEntry.wpm}, Accuracy: ${logEntry.accuracy}%`);
-        setMetricsLog(prev => [...prev, logEntry]);
-      }
+          // Log metrics every second
+          if (Math.floor(elapsed) > secondCounter) {
+            secondCounter = Math.floor(elapsed);
+            const logEntry = {
+              second: secondCounter,
+              wpm: currentWpm,
+              accuracy: currentInput.length > 0 ? Math.round((currentCorrect / currentInput.length) * 100) : 0
+            };
+            console.log(`[Second ${logEntry.second}] WPM: ${logEntry.wpm}, Accuracy: ${logEntry.accuracy}%`);
+            setMetricsLog(prev => [...prev, logEntry]);
+          }
+
+          return currentCorrect;
+        });
+
+        return currentInput;
+      });
     }, 100);
 
     return () => clearInterval(interval);
-  }, [startTime, userInput.length, correctCharacter, testComplete]);
+  }, [startTime, testComplete]);
 
 useEffect(() => {
     const handleKeyDown = (event) => {
@@ -172,7 +179,6 @@ useEffect(() => {
       )}
       <Keyboard />
     </div>
-  )
   )
 }
 
