@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import axios from 'axios';
 import Phrase from '../components/Phrase.jsx';
 import Navbar from '../components/Navbar.jsx';
@@ -19,6 +19,10 @@ function Homepage() {
   const [averageWpm, setAverageWpm] = useState(0);
   const [averageAccuracy, setAverageAccuracy] = useState(0);
   const [metricsLog, setMetricsLog] = useState([]);
+  
+  const userInputRef = useRef('');
+  const correctCharacterRef = useRef(0);
+  const secondCounterRef = useRef(0);
 
   // Clean the raw text by removing unwanted characters
   const cleanText = (text) => {
@@ -53,47 +57,49 @@ function Homepage() {
     if (userInput.length > 0 && startTime === null) {
       setStartTime(Date.now());
     }
+    userInputRef.current = userInput;
   }, [userInput, startTime]);
+
+  // Track correct character changes
+  useEffect(() => {
+    correctCharacterRef.current = correctCharacter;
+  }, [correctCharacter]);
 
   // Update elapsed time and calculate speed metrics
   useEffect(() => {
     if (startTime === null || testComplete) return;
 
-    let secondCounter = 0;
+    secondCounterRef.current = 0;
     const interval = setInterval(() => {
       const elapsed = (Date.now() - startTime) / 1000; // in seconds
       setElapsedTime(elapsed);
 
-      setUserInput(currentInput => {
-        const minutes = elapsed / 60;
-        const words = currentInput.length / 5;
-        const currentWpm = minutes > 0 ? Math.round(words / minutes) : 0;
-        setWpm(currentWpm);
+      const currentInput = userInputRef.current;
+      const currentCorrect = correctCharacterRef.current;
 
-        setCorrectCharacter(currentCorrect => {
-          // Calculate accuracy
-          if (currentInput.length > 0) {
-            const currentAccuracy = Math.round((currentCorrect / currentInput.length) * 100);
-            setAccuracy(currentAccuracy);
-          }
+      // Calculate WPM (assuming average word length of 5 characters)
+      const minutes = elapsed / 60;
+      const words = currentInput.length / 5;
+      const currentWpm = minutes > 0 ? Math.round(words / minutes) : 0;
+      setWpm(currentWpm);
 
-          // Log metrics every second
-          if (Math.floor(elapsed) > secondCounter) {
-            secondCounter = Math.floor(elapsed);
-            const logEntry = {
-              second: secondCounter,
-              wpm: currentWpm,
-              accuracy: currentInput.length > 0 ? Math.round((currentCorrect / currentInput.length) * 100) : 0
-            };
-            console.log(`[Second ${logEntry.second}] WPM: ${logEntry.wpm}, Accuracy: ${logEntry.accuracy}%`);
-            setMetricsLog(prev => [...prev, logEntry]);
-          }
+      // Calculate accuracy
+      if (currentInput.length > 0) {
+        const currentAccuracy = Math.round((currentCorrect / currentInput.length) * 100);
+        setAccuracy(currentAccuracy);
+      }
 
-          return currentCorrect;
-        });
-
-        return currentInput;
-      });
+      // Log metrics every second
+      if (Math.floor(elapsed) > secondCounterRef.current) {
+        secondCounterRef.current = Math.floor(elapsed);
+        const logEntry = {
+          second: secondCounterRef.current,
+          wpm: currentWpm,
+          accuracy: currentInput.length > 0 ? Math.round((currentCorrect / currentInput.length) * 100) : 0
+        };
+        console.log(`[Second ${logEntry.second}] WPM: ${logEntry.wpm}, Accuracy: ${logEntry.accuracy}%`);
+        setMetricsLog(prev => [...prev, logEntry]);
+      }
     }, 100);
 
     return () => clearInterval(interval);
