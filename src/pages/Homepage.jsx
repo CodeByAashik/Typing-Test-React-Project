@@ -38,7 +38,7 @@ function Homepage() {
   const fetchSentence = async () => {
     try {
       setLoading(true);
-      const response = await axios.get("https://api.quotable.io/random?minLength=200&maxLength=220");
+      const response = await axios.get("http://api.quotable.io/random?minLength=200&maxLength=220");
       const raw = response.data.content.toLowerCase();
       setSentence(cleanText(raw));
     } catch (e) {
