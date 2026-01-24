@@ -150,12 +150,12 @@ useEffect(() => {
       </div>
       {testComplete && (
         <div className='flex justify-center mt-8'>
-          <div className='bg-gradient-to-br from-green-900 to-blue-900 rounded-lg p-8 max-w-2xl text-center border-2 border-green-400'>
+          <div className='bg-gray-600 rounded-lg p-8 max-w-2xl text-center border-2 border-green-400'>
             <h2 className='text-3xl font-bold text-green-400 mb-6'>Test Complete!</h2>
             <div className='grid grid-cols-2 gap-6'>
               <div>
                 <p className='text-gray-300 text-sm mb-2'>Average WPM</p>
-                <p className='text-4xl font-bold text-blue-400'>{averageWpm}</p>
+                <p className='text-4xl font-bold text-white'>{averageWpm}</p>
               </div>
               <div>
                 <p className='text-gray-300 text-sm mb-2'>Average Accuracy</p>
@@ -176,7 +176,7 @@ useEffect(() => {
                 setAverageAccuracy(0);
                 fetchSentence();
               }}
-              className='mt-8 px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-lg transition'
+              className='mt-8 px-6 py-2 bg-blue-700 hover:bg-blue-600 text-white font-bold rounded-lg transition'
             >
               Try Again
             </button>
@@ -188,4 +188,4 @@ useEffect(() => {
   )
 }
 
-export default Homepage
+export default Homepage;
