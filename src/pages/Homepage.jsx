@@ -149,37 +149,53 @@ useEffect(() => {
         <Phrase sentence={sentence} loading={loading} userInput={userInput} setCorrectCharacter={setCorrectCharacter} correctCharacter={correctCharacter}/>
       </div>
       {testComplete && (
-        <div className='flex justify-center mt-8'>
-          <div className='bg-gray-600 rounded-lg p-8 max-w-2xl text-center border-2 border-green-400'>
-            <h2 className='text-3xl font-bold text-green-400 mb-6'>Test Complete!</h2>
-            <div className='grid grid-cols-2 gap-6'>
-              <div>
-                <p className='text-gray-300 text-sm mb-2'>Average WPM</p>
-                <p className='text-4xl font-bold text-white'>{averageWpm}</p>
+        <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4'>
+          <div className='relative w-full max-w-2xl overflow-hidden rounded-xl border border-white/20 bg-white/10 p-8 shadow-2xl shadow-black/40 backdrop-blur-xl'>
+            <h2 className='text-2xl font-bold text-white mb-6'>Test Complete!</h2>
+            <div className='grid gap-6 md:grid-cols-2'>
+              <div className='rounded-3xl bg-white/10 p-5 border border-white/10'>
+                <p className='text-xs uppercase tracking-[0.2em] text-white/60 mb-2'>Average WPM</p>
+                <p className='text-4xl font-semibold text-white'>{averageWpm}</p>
               </div>
-              <div>
-                <p className='text-gray-300 text-sm mb-2'>Average Accuracy</p>
-                <p className='text-4xl font-bold text-green-400'>{averageAccuracy}%</p>
+              <div className='rounded-3xl bg-white/10 p-5 border border-white/10'>
+                <p className='text-xs uppercase tracking-[0.2em] text-white/60 mb-2'>Average Accuracy</p>
+                <p className='text-4xl font-semibold text-green-300'>{averageAccuracy}%</p>
+              </div>
+              <div className='rounded-3xl bg-white/10 p-5 border border-white/10'>
+                <p className='text-xs uppercase tracking-[0.2em] text-white/60 mb-2'>Total time</p>
+                <p className='text-4xl font-semibold text-white'>{Math.round(elapsedTime)}s</p>
+              </div>
+              <div className='rounded-3xl bg-white/10 p-5 border border-white/10'>
+                <p className='text-xs uppercase tracking-[0.2em] text-white/60 mb-2'>Sentence length</p>
+                <p className='text-4xl font-semibold text-white'>{sentence.length} chars</p>
               </div>
             </div>
-            <button 
-              onClick={() => {
-                setUserInput('');
-                setCorrectCharacter(0);
-                setStartTime(null);
-                setElapsedTime(0);
-                setWpm(0);
-                setAccuracy(100);
-                setTestComplete(false);
-                setMetricsLog([]);
-                setAverageWpm(0);
-                setAverageAccuracy(0);
-                fetchSentence();
-              }}
-              className='mt-8 px-6 py-2 bg-blue-700 hover:bg-blue-600 text-white font-bold rounded-lg transition'
-            >
-              Try Again
-            </button>
+            <div className='mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center'>
+              <button
+                onClick={() => {
+                  setUserInput('');
+                  setCorrectCharacter(0);
+                  setStartTime(null);
+                  setElapsedTime(0);
+                  setWpm(0);
+                  setAccuracy(100);
+                  setTestComplete(false);
+                  setMetricsLog([]);
+                  setAverageWpm(0);
+                  setAverageAccuracy(0);
+                  fetchSentence();
+                }}
+                className='rounded-full bg-blue-600 px-6 py-3 text-white font-semibold shadow-lg shadow-blue-500/20 transition hover:bg-blue-500'
+              >
+                Try Again
+              </button>
+              <button
+                onClick={() => setTestComplete(false)}
+                className='rounded-full border border-white/20 bg-white/10 px-6 py-3 text-white transition hover:bg-white/20'
+              >
+                Close
+              </button>
+            </div>
           </div>
         </div>
       )}
