@@ -4,8 +4,8 @@ const keyboardLayout = [
   ["`", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=", "Backspace"],
   ["Tab", "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "[", "]", "\\"],
   ["Caps", "A", "S", "D", "F", "G", "H", "J", "K", "L", ";", "'", "Enter"],
-  ["Shift", "Z", "X", "C", "V", "B", "N", "M", ",", ".", "/", "Shift"],
-  ["Ctrl", "Alt", "Space", "Alt", "Ctrl"]
+  ["Shift", "Z", "X", "C", "V", "B", "N", "M", ",", ".", "/", "shift"],
+  ["Ctrl", "Alt", "Space", "slt", "strl"]
 ];
 
 const keyWidthMap = {
@@ -14,9 +14,12 @@ const keyWidthMap = {
   Caps: "w-14 sm:w-16 md:w-20",
   Enter: "w-16 sm:w-20 md:w-24",
   Shift: "w-20 sm:w-24 md:w-28",
+  shift: "w-20 sm:w-24 md:w-28",
   Space: "w-32 sm:w-48 md:w-64 lg:w-[400px]",
   Ctrl: "w-12 sm:w-14 md:w-16",
+  ctrl: "w-12 sm:w-14 md:w-16",
   Alt: "w-12 sm:w-14 md:w-16",
+  alt: "w-12 sm:w-14 md:w-16",
 };
 
 export default function Keyboard() {
