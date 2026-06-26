@@ -5,7 +5,7 @@ const keyboardLayout = [
   ["Tab", "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "[", "]", "\\"],
   ["Caps", "A", "S", "D", "F", "G", "H", "J", "K", "L", ";", "'", "Enter"],
   ["Shift", "Z", "X", "C", "V", "B", "N", "M", ",", ".", "/", "shift"],
-  ["Ctrl", "Alt", "Space", "slt", "strl"]
+  ["Ctrl", "Alt", "Space", "slt", "ctrl"]
 ];
 
 const keyWidthMap = {
